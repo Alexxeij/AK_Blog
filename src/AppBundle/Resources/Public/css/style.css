@@ -1,0 +1,35 @@
+
+
+html {
+    position: relative;
+    min-height: 100vh;
+}
+body {
+    margin-bottom: 4em;
+}
+
+/* стили для navbar */
+
+.navbar-default{
+    background-image: url("../img/329_body_bg0.jpg");
+}
+.footer {
+    background-image: url("../img/329_body_bg0.jpg");
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4em;
+    line-height: 4em;
+    position: absolute;
+}
+
+.custom{
+    background-image: url("../img/329_body_bg0.jpg");
+    width: 100%;
+    height: 100px;
+    margin-top: auto;
+}
+
+.center-text-bottom{
+    text-align: center;
+}

@@ -1,0 +1,12 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block body %}
+  <h1>All article</h1>
+  <hr>
+  {% for article in article %}
+    <h3><a href="{{ path('article_one_page',{id:article.id}) }}">{{ article.title }}</a></h3>
+    {{ article.content }}
+  {% endfor %}
+
+{% endblock %}
+
