@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Entity\Article;
+use AppBundle\Form\ArticleType;
 
 class articleController extends Controller
 {
@@ -33,23 +34,78 @@ class articleController extends Controller
      */
     public function showAction($id)
     {
-        //$id={id}
-        return ['id'=>$id];
-    }
-    /**
-     * article test page
-     *
-     * @Route("/article-test", name="article_test")
-     * @Template()
-     */
-    public function testAction()
-    {
-        $article= new Article();
-        $article->setTitle('some title')->setContent('i^m <b>some</b> article');
+        $article=$this->get('doctrine')->getRepository('AppBundle:Article')->find($id);
 
-        $em=$this->get("doctrine")->getManager();
-        $em->persist($article);
-        $em->flush();
+        if(!$article){
+            throw $this->createNotFoundException('Article not found');
+        }
         return ['article'=>$article];
     }
+
+    /**
+     * article edit page
+     *
+     * @Route("/article/edit/{id}", name="article_edit",requirements={"id" : "[1-9][0-9]*","sl" : "/?"})
+     * @Template()
+     * @param $id
+     * @return array
+     */
+    public function editAction(Request $request)
+    {
+        $id=$request->get('id');
+        $doctrine=$this->get('doctrine');
+        $article=$doctrine->getRepository('AppBundle:Article')->find($id);
+        $form = $this->createForm(ArticleType::class,$article);
+
+        if(!$article){
+            throw $this->createNotFoundException('Article not found');
+        }
+
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+           $em=$doctrine->getManager();
+           $em->persist($article);
+           $em->flush();
+
+            $this->addFlash('success','saved');
+            return $this->redirectToRoute('article_page');
+        }
+
+
+
+        return ['article'=>$article,'form'=>$form->createView()];
+    }
+
+
+    /**
+     * article new page
+     *
+     * @Route("/article/new", name="article_new")
+     * @Template()
+     */
+    public function newArticleAction(Request $request)
+    {
+
+        $article=new Article();
+        $form = $this->createForm(ArticleType::class,$article);
+
+        if(!$article){
+            throw $this->createNotFoundException('Article not found');
+        }
+
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            $em= $em = $this->getDoctrine()->getManager();;
+            $em->persist($article);
+            $em->flush();
+
+            $this->addFlash('success','saved');
+            return $this->redirectToRoute('article_page');
+        }
+
+
+
+        return ['article'=>$article,'form'=>$form->createView()];
+    }
+
 }
